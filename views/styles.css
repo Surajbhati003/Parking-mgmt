@@ -1,0 +1,180 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    /* background-image: url('https://i.postimg.cc/Wbtd5Q21/vivid-blurred-colorful-background.jpg');  */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    color: #333;
+    margin: 0;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for the background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    margin: 10px 0 5px 0;
+    align-self: flex-start;
+    color: #555;
+}
+
+input, select {
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#amount-display {
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+}
+
+#slots-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slot {
+    padding: 10px;
+    margin: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease;
+}
+
+.slot:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Menu bar styles */
+.menu-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #007BFF;
+    color: white;
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu-icon {
+    padding: 14px 16px;
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 20px;
+}
+
+.menu-content {
+    display: none;
+    flex-direction: column;
+    background-color: #007BFF;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-content a {
+    padding: 14px 16px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.menu-content a:hover {
+    background-color: #0056b3;
+}
+
+/* Show menu when it's toggled */
+.menu-content.show {
+    display: block;
+}
+
+/* Enhancements for smaller screens */
+@media (max-width: 768px) {
+    .menu-bar {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .menu-content {
+        width: auto;
+    }
+}
+
+/* Parking lot details */
+.parking-lot-details {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.parking-lot {
+    padding: 15px;
+    margin: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease;
+}
+
+.parking-lot:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

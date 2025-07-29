@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Lot Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="menu-bar">
+        <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+        <div class="menu-content">
+            <a href="parking-lots.html">Parking Lots</a>
+            <a href="parking-lot.html">Parking Lot</a>
+            <a href="vehicle-entry.html">Vehicle Entry</a>
+            <a href="vehicle-exit.html">Vehicle Exit</a>
+            <a href="index.html" onclick="logout()">Logout</a>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+        <h1>Parking Lot Details</h1>
+        <h2 id="lot-name"></h2>
+        <h3>Available Spaces:</h3>
+        <ul id="available-spaces"></ul>
+        <button onclick="vehicleEntry()">Register Vehicle Entry</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lotId = urlParams.get('lotId');
+
+            if (lotId) {
+                fetchParkingLotDetails(lotId);
+            } else {
+                alert('No parking lot selected.');
+            }
+
+            async function fetchParkingLotDetails(lotId) {
+                try {
+                    const response = await fetch(`/api/parking-lots/${lotId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch parking lot details');
+                    }
+                    const data = await response.json();
+                    const lotNameElement = document.getElementById('lot-name');
+                    lotNameElement.textContent = data[0].lot_name;
+                    fetchAvailableSpaces(lotId);
+                } catch (error) {
+                    console.error('Error fetching parking lot details:', error);
+                }
+            }
+
+            async function fetchAvailableSpaces(lotId) {
+                try {
+                    const response = await fetch(`/api/available-spaces/${lotId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch available spaces');
+                    }
+                    const data = await response.json();
+                    const spacesList = document.getElementById('available-spaces');
+                    spacesList.innerHTML = '';
+                    data.forEach(space => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `Space ID: ${space.space_id}, Status: ${space.is_occupied ? 'Occupied' : 'Available'}`;
+                        spacesList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error('Error fetching available spaces:', error);
+                }
+            }
+        });
+
+        function toggleMenu() {
+            const menuContent = document.querySelector('.menu-content');
+            menuContent.classList.toggle('show');
+        }
+
+        window.vehicleEntry = function() {
+        // Redirect to the vehicle entry page
+        window.location.href = 'vehicle-entry.html';    
+        };
+
+    </script>
+</body>
+</html>
