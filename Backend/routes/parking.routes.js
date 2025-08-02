@@ -1,32 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const ParkingController = require('../controllers/parking.controller');
+const parkingController = require('../controllers/parking.controller');
 
-// ParkingLots routes
-router.get('/parking-lots', ParkingController.getAllParkingLots);
-router.get('/parking-lots/:id', ParkingController.getParkingLotById);
+// --------- 📍 Parking Lots ---------
+router.get('/lots', parkingController.getAllParkingLots);
+router.get('/lots/:id', parkingController.getParkingLotById);
 
-// ParkingSpaces routes
-router.get('/parking-spaces', ParkingController.getAllParkingSpaces);
-router.get('/parking-spaces/:id', ParkingController.getParkingSpaceById);
-router.post('/parking-spaces', ParkingController.createParkingSpace);
-router.put('/update-parking-spaces', ParkingController.updateParkingSpace);
-router.delete('/parking-spaces/:id', ParkingController.deleteParkingSpace);
+// --------- 🪧 Parking Spaces ---------
+router.get('/spaces/lot/:lotId', parkingController.getSpacesByLotId);
+router.get('/spaces/available', parkingController.getAvailableSpaces); // requires query params ?lot_id= &v_type_id=
+router.post('/spaces/occupy', parkingController.occupySpace);
+router.post('/spaces/free', parkingController.freeSpace);
 
-// Vehicles routes
-router.get('/allvehicles', ParkingController.getAllVehicles);
-router.get('/vehicles/:id', ParkingController.getVehicleById);
-router.post('/vehicles', ParkingController.createVehicle); // Corrected route
-router.delete('/vehicles/:id', ParkingController.deleteVehicle);
+// Optional CRUD for Parking Spaces (only if FEATURE_SPACES_CRUD=true)
+router.get('/spaces', parkingController.getAllParkingSpaces);             // Optional
+router.get('/spaces/:id', parkingController.getParkingSpaceById);        // Optional
+router.delete('/spaces/:id', parkingController.deleteParkingSpace);      // Optional
 
-// EntryExitLogs routes
-router.get('/logs', ParkingController.getAllLogs);
-router.get('/logs/:id', ParkingController.getLogById);
-router.post('/logs', ParkingController.createLog);
-router.put('/logs', ParkingController.updateLog);
-router.delete('/logs/:id', ParkingController.deleteLog);
+// --------- 🚗 Entry/Exit Logs ---------
+router.post('/entry', parkingController.logVehicleEntry);
+router.post('/exit', parkingController.logVehicleExit);
+router.get('/logs/active', parkingController.getActiveLogs);
+router.get('/logs/vehicle/:license_plate', parkingController.getParkingHistory);
 
-// Available spaces route
-router.get('/available-spaces/:parking_lot_id', ParkingController.getAvailableSpaces);
+// Optional full logs access (only if FEATURE_LOG_RETRIEVAL=true)
+router.get('/logs', parkingController.getAllLogs);                       // Optional
+router.get('/logs/:id', parkingController.getLogById);                   // Optional
+router.delete('/logs/:id', parkingController.deleteLog);                 // Optional
 
 module.exports = router;
