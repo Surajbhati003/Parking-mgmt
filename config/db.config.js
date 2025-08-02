@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
     host:'sql.freedb.tech',
-    user: 'freedb_dbmsproject',
-    password: 'gdM6n26fRE4!XKe',
-    database: 'freedb_dbmsproject'
+    user: 'freedb_dbms_Parking',
+    password: 'SJUD6xMyW&zwb76',
+    database: 'freedb_Parking_Management_DB'
 });
 
 connection.connect(err => {
