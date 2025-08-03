@@ -8,6 +8,8 @@
 // Backend/config/db.config.js
 
 // Backend/config/db.config.js
+
+//priyanshu codes from here 
 const mysql = require('mysql2');
 
 // Create connection pool with minimal, valid configuration
