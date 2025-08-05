@@ -534,16 +534,16 @@ exports.createVehicle = (req, res) => {
 
 exports.updateVehicle = (req, res) => {
   const { license_plate } = req.params;
-  const { customer_id, v_type_id } = req.body;
+  const { v_type_id } = req.body;
 
-  if (!customer_id || !v_type_id) {
+  if (!v_type_id) {
     return res.status(400).json({
       success: false,
-      message: 'customer_id and v_type_id are required'
+      message: 'v_type_id is required'
     });
   }
 
-  Parking.updateVehicle(license_plate, { customer_id, v_type_id }, (err, result) => {
+  Parking.updateVehicle(license_plate, v_type_id, (err, result) => {
     if (err) {
       console.error('Error updating vehicle:', err);
       return res.status(500).json({ 
@@ -551,19 +551,22 @@ exports.updateVehicle = (req, res) => {
         error: err.message 
       });
     }
+
     if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         message: 'Vehicle not found'
       });
     }
+
     res.json({
       success: true,
       message: 'Vehicle updated successfully',
-      data: { license_plate, customer_id, v_type_id }
+      data: { license_plate, v_type_id }
     });
   });
 };
+
 
 exports.deleteVehicle = (req, res) => {
   const { license_plate } = req.params;
