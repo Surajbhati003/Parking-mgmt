@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+
+
+
 // REGISTER
 exports.register = (req, res) => {
   const { name, email, phone, password, role } = req.body;
@@ -28,29 +31,67 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (results.length === 0) return res.status(401).json({ error: 'User not found' });
+  const query = 'SELECT * FROM users WHERE email = ?';
+  db.query(query, [email], async (err, results) => {
+    if (err) {
+      console.error('Database query error:', err); 
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
     const user = results[0];
-    const isMatch = bcrypt.compareSync(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // Generate JWT
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
     const token = jwt.sign(
-      {
-        user_id: user.user_id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
+      { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      { expiresIn: '1h' }
     );
 
-    res.json({ message: 'Login successful', token });
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role
+      }
+    });
   });
 };
 
 
+// reset password
+exports.resetPassword = (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: 'Email and new password are required' });
+  }
+
+  const saltRounds = 10;
+  bcrypt.hash(newPassword, saltRounds, (err, hashedPassword) => {
+    if (err) return res.status(500).json({ message: 'Error hashing password' });
+
+    // Update user's password
+    const query = 'UPDATE users SET password = ? WHERE email = ?';
+    db.query(query, [hashedPassword, email], (err, result) => {
+      if (err) return res.status(500).json({ message: 'Database error' });
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'Password reset successful' });
+    });
+  });
+};
 
