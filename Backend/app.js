@@ -5,6 +5,7 @@ const db = require('./config/db.config'); // Import database configuration
 const customerRoutes = require('./routes/customer.routes');
 const vehicleRoutes = require('./routes/vehicle.routes'); 
 const parkingRoutes = require('./routes/parking.routes'); 
+const analyticsRoutes = require('./routes/analytics.routes');
 // Create Express application
 const app = express();
 
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 app.use('/api/customers', customerRoutes);
 app.use('/api/vehicles', vehicleRoutes); 
 app.use('/api/parking', parkingRoutes); 
+app.use('/api/analytics', analyticsRoutes)
 
 // Basic route
 app.get('/', (req, res) => {
