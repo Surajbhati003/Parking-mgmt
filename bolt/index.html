@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase - Parking Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="logo">
+                        <h1>ParkEase</h1>
+                        <p>Parking Management System</p>
+                    </div>
+                    
+                    <form id="login-form" class="login-form">
+                        <div class="form-group">
+                            <label for="role">Select Role</label>
+                            <select id="role" required>
+                                <option value="">Choose your role</option>
+                                <option value="manager">Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" required placeholder="Enter username">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" required placeholder="Enter password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    
+                    <div class="demo-credentials">
+                        <p><strong>Demo Credentials:</strong></p>
+                        <p>Manager: username: <code>manager</code>, password: <code>pass123</code></p>
+                        <p>Admin: username: <code>admin</code>, password: <code>admin123</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Dashboard -->
+        <div id="manager-screen" class="screen">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <h2>ParkEase Manager</h2>
+                </div>
+                <div class="nav-controls">
+                    <button id="theme-toggle" class="btn btn-ghost">🌙</button>
+                    <button id="logout-btn" class="btn btn-ghost">Logout</button>
+                </div>
+            </nav>
+
+            <div class="dashboard">
+                <aside class="sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <span>📊</span> Dashboard
+                        </a>
+                        <a href="#vehicles" class="nav-link" data-section="vehicles">
+                            <span>🚗</span> Vehicle Management
+                        </a>
+                        <a href="#customers" class="nav-link" data-section="customers">
+                            <span>👥</span> Customers
+                        </a>
+                        <a href="#parking" class="nav-link" data-section="parking">
+                            <span>🅿️</span> Parking Lot
+                        </a>
+                        <a href="#analytics" class="nav-link" data-section="analytics">
+                            <span>📈</span> Analytics
+                        </a>
+                    </nav>
+                </aside>
+
+                <main class="main-content">
+                    <!-- Dashboard Overview -->
+                    <section id="dashboard-section" class="content-section active">
+                        <div class="section-header">
+                            <h3>Dashboard Overview</h3>
+                            <div class="date-display" id="current-date"></div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🚗</div>
+                                <div class="stat-details">
+                                    <h4>Occupied Spaces</h4>
+                                    <p class="stat-number" id="occupied-spaces">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🅿️</div>
+                                <div class="stat-details">
+                                    <h4>Available Spaces</h4>
+                                    <p class="stat-number" id="available-spaces">50</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-details">
+                                    <h4>Today's Revenue</h4>
+                                    <p class="stat-number" id="daily-revenue">$0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-details">
+                                    <h4>Total Customers</h4>
+                                    <p class="stat-number" id="total-customers">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-activity">
+                            <h4>Recent Activity</h4>
+                            <div id="recent-activity-list" class="activity-list"></div>
+                        </div>
+                    </section>
+
+                    <!-- Vehicle Management -->
+                    <section id="vehicles-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Vehicle Management</h3>
+                            <div class="header-actions">
+                                <button class="btn btn-primary" id="vehicle-entry-btn">Vehicle Entry</button>
+                                <button class="btn btn-secondary" id="vehicle-exit-btn">Vehicle Exit</button>
+                            </div>
+                        </div>
+
+                        <div class="search-bar">
+                            <input type="text" id="vehicle-search" placeholder="Search by license plate or customer name...">
+                        </div>
+
+                        <div class="table-container">
+                            <table id="vehicles-table">
+                                <thead>
+                                    <tr>
+                                        <th>License Plate</th>
+                                        <th>Customer</th>
+                                        <th>Entry Time</th>
+                                        <th>Space</th>
+                                        <th>Duration</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vehicles-tbody"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Customer Management -->
+                    <section id="customers-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Customer Management</h3>
+                            <button class="btn btn-primary" id="add-customer-btn">Add Customer</button>
+                        </div>
+
+                        <div class="search-bar">
+                            <input type="text" id="customer-search" placeholder="Search customers...">
+                        </div>
+
+                        <div class="customers-grid" id="customers-grid"></div>
+                    </section>
+
+                    <!-- Parking Lot -->
+                    <section id="parking-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Parking Lot Layout</h3>
+                            <div class="parking-stats">
+                                <span class="legend">
+                                    <span class="legend-item">
+                                        <span class="color-box available"></span> Available
+                                    </span>
+                                    <span class="legend-item">
+                                        <span class="color-box occupied"></span> Occupied
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="parking-lot" id="parking-lot"></div>
+                    </section>
+
+                    <!-- Analytics -->
+                    <section id="analytics-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Analytics & Reports</h3>
+                            <select id="analytics-period">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+
+                        <div class="analytics-grid">
+                            <div class="chart-container">
+                                <h4>Revenue Trend</h4>
+                                <canvas id="revenue-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Peak Hours</h4>
+                                <canvas id="peak-hours-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="analytics-summary">
+                            <div class="summary-card">
+                                <h4>Average Duration</h4>
+                                <p id="avg-duration">2.5 hours</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Peak Hour</h4>
+                                <p id="peak-hour">2:00 PM</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Customer Retention</h4>
+                                <p id="retention-rate">78%</p>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-screen" class="screen">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <h2>ParkEase Admin</h2>
+                </div>
+                <div class="nav-controls">
+                    <button id="admin-theme-toggle" class="btn btn-ghost">🌙</button>
+                    <button id="admin-logout-btn" class="btn btn-ghost">Logout</button>
+                </div>
+            </nav>
+
+            <div class="dashboard">
+                <aside class="sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="#admin-overview" class="nav-link active" data-section="admin-overview">
+                            <span>🏢</span> Overview
+                        </a>
+                        <a href="#lots" class="nav-link" data-section="lots">
+                            <span>🅿️</span> Parking Lots
+                        </a>
+                        <a href="#managers" class="nav-link" data-section="managers">
+                            <span>👨‍💼</span> Managers
+                        </a>
+                        <a href="#admin-analytics" class="nav-link" data-section="admin-analytics">
+                            <span>📊</span> System Analytics
+                        </a>
+                        <a href="#reports" class="nav-link" data-section="reports">
+                            <span>📋</span> Reports
+                        </a>
+                    </nav>
+                </aside>
+
+                <main class="main-content">
+                    <!-- Admin Overview -->
+                    <section id="admin-overview-section" class="content-section active">
+                        <div class="section-header">
+                            <h3>System Overview</h3>
+                        </div>
+                        
+                        <div class="admin-stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🏢</div>
+                                <div class="stat-details">
+                                    <h4>Total Lots</h4>
+                                    <p class="stat-number">5</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">👨‍💼</div>
+                                <div class="stat-details">
+                                    <h4>Active Managers</h4>
+                                    <p class="stat-number">12</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-details">
+                                    <h4>Monthly Revenue</h4>
+                                    <p class="stat-number">$45,230</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-details">
+                                    <h4>Growth Rate</h4>
+                                    <p class="stat-number">+15%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lots-overview">
+                            <h4>Lot Performance Overview</h4>
+                            <div id="lots-performance" class="lots-grid"></div>
+                        </div>
+                    </section>
+
+                    <!-- Parking Lots Management -->
+                    <section id="lots-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Parking Lots Management</h3>
+                            <button class="btn btn-primary" id="add-lot-btn">Add New Lot</button>
+                        </div>
+
+                        <div id="lots-list" class="lots-list"></div>
+                    </section>
+
+                    <!-- Managers Management -->
+                    <section id="managers-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Manager Administration</h3>
+                            <button class="btn btn-primary" id="add-manager-btn">Add Manager</button>
+                        </div>
+
+                        <div class="table-container">
+                            <table id="managers-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Assigned Lot</th>
+                                        <th>Performance</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="managers-tbody"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- System Analytics -->
+                    <section id="admin-analytics-section" class="content-section">
+                        <div class="section-header">
+                            <h3>System Analytics</h3>
+                        </div>
+
+                        <div class="analytics-grid">
+                            <div class="chart-container">
+                                <h4>Cross-Lot Revenue</h4>
+                                <canvas id="cross-lot-revenue-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Occupancy Trends</h4>
+                                <canvas id="occupancy-trends-chart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Reports -->
+                    <section id="reports-section" class="content-section">
+                        <div class="section-header">
+                            <h3>Reports & Export</h3>
+                        </div>
+
+                        <div class="reports-grid">
+                            <div class="report-card">
+                                <h4>Financial Report</h4>
+                                <p>Monthly revenue and profit analysis</p>
+                                <button class="btn btn-primary">Generate Report</button>
+                            </div>
+                            <div class="report-card">
+                                <h4>Occupancy Report</h4>
+                                <p>Space utilization across all lots</p>
+                                <button class="btn btn-primary">Generate Report</button>
+                            </div>
+                            <div class="report-card">
+                                <h4>Manager Performance</h4>
+                                <p>Individual manager metrics and KPIs</p>
+                                <button class="btn btn-primary">Generate Report</button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modal-overlay" class="modal-overlay">
+            <div id="modal" class="modal">
+                <div class="modal-header">
+                    <h3 id="modal-title">Modal Title</h3>
+                    <button id="modal-close" class="btn btn-ghost">&times;</button>
+                </div>
+                <div id="modal-content" class="modal-content"></div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="manager.js"></script>
+    <script src="admin.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
