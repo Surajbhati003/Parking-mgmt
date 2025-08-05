@@ -10,16 +10,16 @@
 // Backend/config/db.config.js
 
 //priyanshu codes from here 
+require('dotenv').config();
 const mysql = require('mysql2');
-
 // Create connection pool with minimal, valid configuration
 const pool = mysql.createPool({
-    host: 'sql.freedb.tech',
-    user: 'freedb_dbms_Parking',
-    password: 'SJUD6xMyW&zwb76', // Your password is empty
-    database: 'freedb_Parking_Management_DB',
-    port: 3306,
-    connectionLimit: 10
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    connectionLimit: process.env.DB_CONNECTION_LIMIT || 10
 });
 
 // Test connection function
