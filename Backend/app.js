@@ -1,10 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 const db = require('./config/db.config'); // Import database configuration
 // Import  routes
 const customerRoutes = require('./routes/customer.routes');
 const vehicleRoutes = require('./routes/vehicle.routes'); 
 const parkingRoutes = require('./routes/parking.routes'); 
+const authRoutes = require('./routes/auth.routes');// only auth will be public
+const analyticsRoutes = require('./routes/analytics.routes'); // Import analytics routes
 // Create Express application
 const app = express();
 
@@ -20,6 +23,8 @@ db.testConnection((err, results) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
+// 🔐 Import JWT middleware
+const verifyToken = require('./middleware/auth');
 
 // Debug middleware to log all requests
 app.use((req, res, next) => {
@@ -30,9 +35,11 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api/customers', customerRoutes);
-app.use('/api/vehicles', vehicleRoutes); 
-app.use('/api/parking', parkingRoutes); 
+app.use('/api/customers',verifyToken, customerRoutes);
+app.use('/api/vehicles',verifyToken, vehicleRoutes); 
+app.use('/api/parking',verifyToken, parkingRoutes); 
+app.use('/api/auth', authRoutes); // public routes for authentication
+app.use('/api/analytics', verifyToken, analyticsRoutes); 
 
 // Basic route
 app.get('/', (req, res) => {

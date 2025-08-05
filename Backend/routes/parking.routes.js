@@ -49,13 +49,6 @@ router.get('/spaces', parkingController.getAllParkingSpaces);
 router.get('/spaces/:id', parkingController.getParkingSpaceById);
 router.delete('/spaces/:id', parkingController.deleteParkingSpace);
 
-// --------- 🚗 Vehicle Management ---------
-router.get('/vehicles', parkingController.getAllVehicles);
-router.get('/vehicles/:license_plate', parkingController.getVehicleByLicensePlate);
-router.post('/vehicles', parkingController.createVehicle);
-router.put('/vehicles/:license_plate', parkingController.updateVehicle);
-router.delete('/vehicles/:license_plate', parkingController.deleteVehicle);
-
 // --------- 🚙 Vehicle Types ---------
 router.get('/vehicle-types', parkingController.getAllVehicleTypes);
 router.get('/vehicle-types/:id', parkingController.getVehicleTypeById);
