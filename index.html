@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase - Smart Parking Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-car"></i>
+                <span>ParkEase</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#dashboard" class="nav-link" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#customers" class="nav-link" data-section="customers">
+                    <i class="fas fa-users"></i> Customers
+                </a>
+                <a href="#vehicles" class="nav-link" data-section="vehicles">
+                    <i class="fas fa-car"></i> Vehicles
+                </a>
+                <a href="#parking" class="nav-link" data-section="parking">
+                    <i class="fas fa-parking"></i> Parking
+                </a>
+                <a href="#analytics" class="nav-link" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </a>
+            </div>
+            <div class="nav-auth">
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <span id="userName"></span>
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+                <button class="btn-login" id="loginBtn" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <span class="close" onclick="closeLoginModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="showLoginForm()">Login</button>
+                    <button class="tab-btn" onclick="showRegisterForm()">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" id="registerName" placeholder="Full Name" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="registerPhone" placeholder="Phone" required>
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="registerRole" required>
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="user">User</option>
+                        </select>
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="section-header">
+                <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                <p>Overview of your parking management system</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalLots">-</h3>
+                        <p>Total Lots</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-square-parking"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalSpaces">-</h3>
+                        <p>Total Spaces</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="occupiedSpaces">-</h3>
+                        <p>Occupied</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalCustomers">-</h3>
+                        <p>Customers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                    <div id="recentActivity" class="activity-list">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-chart-pie"></i> Occupancy Rate</h3>
+                    <div class="occupancy-chart">
+                        <div class="occupancy-circle">
+                            <span id="occupancyRate">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customers Section -->
+        <section id="customers" class="content-section">
+            <div class="section-header">
+                <h1><i class="fas fa-users"></i> Customer Management</h1>
+                <button class="btn-primary" onclick="showAddCustomerModal()">
+                    <i class="fas fa-plus"></i> Add Customer
+                </button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="customerSearch" placeholder="Search customers...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div class="table-container">
+                <table id="customersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="loading">Loading customers...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Vehicles Section -->
+        <section id="vehicles" class="content-section">
+            <div class="section-header">
+                <h1><i class="fas fa-car"></i> Vehicle Management</h1>
+                <button class="btn-primary" onclick="showAddVehicleModal()">
+                    <i class="fas fa-plus"></i> Add Vehicle
+                </button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="vehicleSearch" placeholder="Search by license plate...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div class="table-container">
+                <table id="vehiclesTable">
+                    <thead>
+                        <tr>
+                            <th>License Plate</th>
+                            <th>Customer</th>
+                            <th>Vehicle Type</th>
+                            <th>Hourly Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="loading">Loading vehicles...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Parking Section -->
+        <section id="parking" class="content-section">
+            <div class="section-header">
+                <h1><i class="fas fa-parking"></i> Parking Management</h1>
+                <button class="btn-primary" onclick="showEntryModal()">
+                    <i class="fas fa-sign-in-alt"></i> Vehicle Entry
+                </button>
+            </div>
+
+            <div class="parking-tabs">
+                <button class="tab-btn active" onclick="showParkingTab('lots')">Parking Lots</button>
+                <button class="tab-btn" onclick="showParkingTab('spaces')">Spaces</button>
+                <button class="tab-btn" onclick="showParkingTab('logs')">Active Sessions</button>
+            </div>
+
+            <div id="parkingLots" class="parking-content active">
+                <div class="lots-grid" id="lotsGrid">
+                    <div class="loading">Loading parking lots...</div>
+                </div>
+            </div>
+
+            <div id="parkingSpaces" class="parking-content">
+                <div class="spaces-filter">
+                    <select id="lotFilter">
+                        <option value="">Select Parking Lot</option>
+                    </select>
+                    <select id="typeFilter">
+                        <option value="">All Vehicle Types</option>
+                    </select>
+                </div>
+                <div class="spaces-grid" id="spacesGrid">
+                    <div class="loading">Select a parking lot to view spaces</div>
+                </div>
+            </div>
+
+            <div id="activeLogs" class="parking-content">
+                <div class="table-container">
+                    <table id="activeLogsTable">
+                        <thead>
+                            <tr>
+                                <th>License Plate</th>
+                                <th>Customer</th>
+                                <th>Space</th>
+                                <th>Entry Time</th>
+                                <th>Duration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="loading">Loading active sessions...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics" class="content-section">
+            <div class="section-header">
+                <h1><i class="fas fa-chart-bar"></i> Analytics</h1>
+                <div class="date-filter">
+                    <input type="date" id="startDate">
+                    <input type="date" id="endDate">
+                    <button class="btn-secondary" onclick="applyDateFilter()">Apply</button>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3><i class="fas fa-dollar-sign"></i> Revenue Analytics</h3>
+                    <div id="revenueChart" class="chart-container">
+                        <div class="loading">Loading revenue data...</div>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <h3><i class="fas fa-clock"></i> Peak Hours</h3>
+                    <div id="peakHoursChart" class="chart-container">
+                        <div class="loading">Loading peak hours data...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Customer Modal -->
+    <div class="modal" id="addCustomerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Customer</h2>
+                <span class="close" onclick="closeAddCustomerModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCustomerForm">
+                    <div class="form-group">
+                        <input type="text" id="customerName" placeholder="Full Name" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="customerGender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Customer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div class="modal" id="addVehicleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Vehicle</h2>
+                <span class="close" onclick="closeAddVehicleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addVehicleForm">
+                    <div class="form-group">
+                        <input type="text" id="vehiclePlate" placeholder="License Plate" required>
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="vehicleCustomer" required>
+                            <option value="">Select Customer</option>
+                        </select>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="vehicleType" required>
+                            <option value="">Select Vehicle Type</option>
+                        </select>
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Vehicle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Entry Modal -->
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vehicle Entry</h2>
+                <span class="close" onclick="closeEntryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="entryForm">
+                    <div class="form-group">
+                        <input type="text" id="entryPlate" placeholder="License Plate" required>
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="entryLot" required>
+                            <option value="">Select Parking Lot</option>
+                        </select>
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="form-group">
+                        <select id="entrySpace" required>
+                            <option value="">Select Available Space</option>
+                        </select>
+                        <i class="fas fa-square-parking"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Log Entry
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
